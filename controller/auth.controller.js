@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 
 import { OAuth2Client } from "google-auth-library";
 import twilioClient from "../utils/twilio.js";
-import { executeBothDB } from "../helper/dbHelper.js";
+import { executeBothDB } from "../helper/dbhelper.js";
 
 const googleAuthClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID); 
 const generateToken = (userId, expiresIn = "7d") =>
