@@ -1,16 +1,17 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import pool from "./config/db.js";   // 🔥 PostgreSQL pool import
+import pool from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
 
 dotenv.config();
 
 const app = express();
- 
+
 app.use(cors());
 app.use(express.json());
- 
+
+// TEST DB
 app.get("/test-db", async (req, res) => {
   try {
     const result = await pool.query("SELECT NOW()");
@@ -19,22 +20,17 @@ app.get("/test-db", async (req, res) => {
       time: result.rows[0],
     });
   } catch (error) {
-    console.error("DB Test Error:", error);
     res.status(500).json({
       success: false,
-      message: "DB connection failed",
+      message: error.message,
     });
   }
 });
- 
+
 app.use("/api/auth", authRoutes);
- const PORT = process.env.PORT || 5000;
-app.listen(PORT, async () => {
-  try {
-    await pool.connect(); // 🔥 ensure DB connected
-    console.log("✅ PostgreSQL Connected");
-    console.log("🚀 Server running on port " + PORT);
-  } catch (err) {
-    console.error("❌ DB Connection Error:", err);
-  }
+
+const PORT = process.env.PORT;
+
+app.listen(PORT, () => {
+  console.log("🚀 Server running on port " + PORT);
 });
