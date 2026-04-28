@@ -59,7 +59,29 @@ const pool =
   process.env.DB_MODE === "aws"
     ? awsPool
     : localPool;
+const testDBConnection = async () => {
+  try {
+    const client = await pool.connect();
+    console.log("🔄 Testing DB connection...");
 
+    const result = await client.query("SELECT NOW()");
+    client.release();
+
+    if (process.env.DB_MODE === "aws") {
+      console.log("🚀 LIVE DB CONNECTED SUCCESSFULLY");
+    } else {
+      console.log("💻 LOCAL DB CONNECTED SUCCESSFULLY");
+    }
+
+    console.log("⏰ DB Time:", result.rows[0].now);
+  } catch (error) {
+    console.error("❌ DB CONNECTION FAILED:", error.message);
+  }
+};
+
+// run test
+testDBConnection();
+ 
 console.log("🔥 Using DB:", process.env.DB_MODE);
 
 export default pool;
